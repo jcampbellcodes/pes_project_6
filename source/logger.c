@@ -21,9 +21,9 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include "fsl_debug_console.h"
+
 #include "time.h"
-#include "board.h"
+#include "uart.h"
 
 /**
  * Used as a size for static char arrays.
@@ -72,13 +72,13 @@ static void PRINT_TIME_STAMP()
 	uint64_t seconds = (uint64_t)(now)%60;
 
 	sprintf(format_buf, "%02d:",  hours);
-	PRINTF(format_buf);
+	uart_put_string(format_buf);
 	sprintf(format_buf, "%02d:",  minutes);
-	PRINTF(format_buf);
+	uart_put_string(format_buf);
 	sprintf(format_buf, "%02d",  seconds);
-	PRINTF(format_buf);
+	uart_put_string(format_buf);
 	sprintf(format_buf, ".%1d ",  tenths_seconds%10);
-	PRINTF(format_buf);
+	uart_put_string(format_buf);
 }
 
 /**
@@ -86,9 +86,13 @@ static void PRINT_TIME_STAMP()
  */
 static void PRINT_LOG_PREFIX(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSeverity)
 {
-	PRINTF("\n\r");
-	PRINTF("%s -> %s::[%s] : ",  sLogSeverityStrings[inSeverity] , sLogModuleStrings[inModule], inFuncName);
+	static char format_buf[ARRLEN] = {0};
+	for(int i = 0; i < ARRLEN; i++) format_buf[i] = '\0';
+
+	uart_put_string("\n\r");
+	sprintf(format_buf, "%s -> %s::[%s] : ",  sLogSeverityStrings[inSeverity] , sLogModuleStrings[inModule], inFuncName);
 	PRINT_TIME_STAMP();
+	uart_put_string(format_buf);
 }
 
 /**
@@ -105,7 +109,6 @@ void log_enable(LogSeverity_t inSeverity)
 {
 	sLoggingEnabled = true;
 	sLogSeverity = inSeverity;
-	BOARD_InitDebugConsole();
 }
 
 void log_disable()
@@ -120,19 +123,25 @@ bool log_enabled()
 
 void log_data(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSeverity, const uint8_t* inBytes, size_t inSize)
 {
+	static char format_buf[ARRLEN] = {0};
+	for(int i = 0; i < ARRLEN; i++) format_buf[i] = '\0';
+
 	if (sLoggingEnabled && inSeverity >= sLogSeverity)
 	{
 		PRINT_LOG_PREFIX(inModule, inFuncName, inSeverity);
-		PRINTF("\n\rBytes at address %p:\n\r==========================\n\r", inBytes);
+		sprintf(format_buf, "\n\rBytes at address %p:\n\r==========================\n\r", inBytes);
+		uart_put_string(format_buf);
 		for(int i = 0; i < inSize; i++)
 		{
-			PRINTF("%2x ", inBytes[i]);
+			sprintf(format_buf, "%2x ", inBytes[i]);
+			uart_put_string(format_buf);
+
 			if((i+1)%4 == 0)
 			{
-				PRINTF("\r\n");
+				uart_put_string("\n\r");
 			}
 		}
-		printf("\n\r==========================\n\r");
+		uart_put_string("\n\r==========================\n\r");
 	}
 }
 
@@ -149,16 +158,23 @@ void log_string(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSe
 	    vsprintf(format_buf, inString, argp);
 	    va_end(argp);
 	    PRINT_LOG_PREFIX(inModule, inFuncName, inSeverity);
-		PRINTF("%s\n\r", format_buf);
+
+	    uart_put_string(format_buf);
+	    uart_put_string("\n\r");
 	}
 }
 
 
 void log_integer(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSeverity, uint64_t inNum)
 {
+	static char format_buf[ARRLEN] = {0};
+	for(int i = 0; i < ARRLEN; i++) format_buf[i] = '\0';
+
 	if (sLoggingEnabled && inSeverity >= sLogSeverity)
 	{
 		PRINT_LOG_PREFIX(inModule, inFuncName, inSeverity);
-		PRINTF("%lld\n\r", inNum);
+		sprintf(format_buf, "%lld\n\r", inNum);
+		uart_put_string(format_buf);
+		uart_put_string("\n\r");
 	}
 }

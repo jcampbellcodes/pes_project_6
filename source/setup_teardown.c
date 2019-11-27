@@ -35,9 +35,10 @@
 #include "sine.h"
 #include "dac.h"
 #include "MKL25Z4.h"
+#include "uart.h"
 
 /* The software timer period. */
-#define SW_TIMER_PERIOD_MS ( portTICK_PERIOD_MS * 10 )
+#define SW_TIMER_PERIOD_MS ( 10 / portTICK_PERIOD_MS )
 
 /* The callback function. */ // TODO: Where should this live?
 static void SwTimerCallback(TimerHandle_t xTimer);
@@ -53,7 +54,7 @@ void initialize()
     SystemCoreClockUpdate();
     /* Create the software timer. */
     SwTimerHandle = xTimerCreate("SwTimer",          /* Text name. */
-                                 SW_TIMER_PERIOD_MS, /* Timer period. */
+    		                     pdMS_TO_TICKS(100), /* Timer period. */
                                  pdTRUE,             /* Enable auto reload. */
                                  0,                  /* ID is not used. */
                                  SwTimerCallback);   /* The callback function. */
@@ -76,7 +77,7 @@ void initialize()
 #else
 	log_enable(LOG_SEVERITY_STATUS);
 #endif
-
+	uart_init(115200);
 	time_init();
     leds_init();
     init_sine();

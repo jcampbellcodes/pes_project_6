@@ -23,7 +23,7 @@
 #include "timers.h"
 
 /* The software timer period. */
-#define SW_TIMER_PERIOD_MS (10 / portTICK_PERIOD_MS)
+#define SW_TIMER_PERIOD_MS ( 10 / portTICK_PERIOD_MS )
 
 // tenths of a second
 static uint64_t gSystemTime = 0;
@@ -40,7 +40,7 @@ void time_init()
 
     /* Create the software timer. */
     SwTimerHandle = xTimerCreate("TimeTicker",          /* Text name. */
-                                 SW_TIMER_PERIOD_MS, /* Timer period. */
+    		                     pdMS_TO_TICKS(100), /* Timer period. */
                                  pdTRUE,             /* Enable auto reload. */
                                  0,                  /* ID is not used. */
 								 time_ticker);   /* The callback function. */

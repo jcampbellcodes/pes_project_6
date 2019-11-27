@@ -14,7 +14,8 @@ C_SRCS += \
 ../source/semihost_hardfault.c \
 ../source/setup_teardown.c \
 ../source/sine.c \
-../source/time.c 
+../source/time.c \
+../source/uart.c 
 
 OBJS += \
 ./source/circular_buffer.o \
@@ -27,7 +28,8 @@ OBJS += \
 ./source/semihost_hardfault.o \
 ./source/setup_teardown.o \
 ./source/sine.o \
-./source/time.o 
+./source/time.o \
+./source/uart.o 
 
 C_DEPS += \
 ./source/circular_buffer.d \
@@ -40,7 +42,8 @@ C_DEPS += \
 ./source/semihost_hardfault.d \
 ./source/setup_teardown.d \
 ./source/sine.d \
-./source/time.d 
+./source/time.d \
+./source/uart.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
