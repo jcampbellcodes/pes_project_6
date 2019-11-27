@@ -1,0 +1,4 @@
+time.c:31:6:time_ticker	12	static
+time.c:37:6:time_init	24	static
+time.c:53:10:time_passed	32	static
+time.c:68:10:time_now	12	static

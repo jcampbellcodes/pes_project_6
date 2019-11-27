@@ -1,0 +1,3 @@
+setup_teardown.c:45:6:initialize	24	static
+setup_teardown.c:94:13:SwTimerCallback	32	static
+setup_teardown.c:118:6:terminate	8	static

@@ -1,0 +1,2 @@
+handle_led.c:45:6:leds_init	8	static
+handle_led.c:76:6:set_led	16	static

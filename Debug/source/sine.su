@@ -1,0 +1,3 @@
+sine.c:16:7:sinef	24	static
+sine.c:26:6:init_sine	40	static
+sine.c:41:10:get_next_sine_sample	8	static

@@ -1,0 +1,11 @@
+circular_buffer.c:54:6:bufferIsOwned	24	static
+circular_buffer.c:73:15:circular_buf_init	32	static
+circular_buffer.c:102:6:circular_buf_free	32	static
+circular_buffer.c:125:10:circular_buf_resize	24	static
+circular_buffer.c:152:10:circular_buf_push	24	static
+circular_buffer.c:175:10:circular_buf_push_resize	24	static
+circular_buffer.c:208:10:circular_buf_pop	24	static
+circular_buffer.c:224:6:circular_buf_empty	16	static
+circular_buffer.c:230:6:circular_buf_full	16	static
+circular_buffer.c:236:8:circular_buf_capacity	16	static
+circular_buffer.c:242:8:circular_buf_size	24	static
