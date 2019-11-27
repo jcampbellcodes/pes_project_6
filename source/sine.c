@@ -50,7 +50,7 @@ void sine_init()
 
 	}
 
-	LOG_STRING(LOG_MODULE_MAIN, LOG_SEVERITY_TEST, "Sine initialized.");
+	LOG_STRING(LOG_MODULE_MAIN, LOG_SEVERITY_DEBUG, "Sine initialized.");
 }
 
 // get next sine sample

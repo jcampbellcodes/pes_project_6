@@ -3,6 +3,6 @@ logger.c:87:13:PRINT_LOG_PREFIX	40	static
 logger.c:108:6:log_enable	16	static
 logger.c:114:6:log_disable	8	static
 logger.c:119:6:log_enabled	8	static
-logger.c:124:6:log_data	32	static
-logger.c:149:6:log_string	28	static
-logger.c:168:6:log_integer	32	static
+logger.c:124:6:log_data	24	static
+logger.c:149:6:log_string	532	static
+logger.c:168:6:log_integer	16	static

@@ -1,0 +1,4 @@
+tasks.c:15:6:tasks_init	24	static
+tasks.c:52:6:write_dac0_task	32	static
+tasks.c:73:6:read_adc0_task	32	static
+tasks.c:111:6:dma_transfer_complete	16	static

@@ -70,6 +70,16 @@ bool bufferIsOwned(cbuf_handle_t inHandle)
 	return false;
 }
 
+void circular_buf_reset(cbuf_handle_t inBufHandle)
+{
+    if(bufferIsOwned(inBufHandle))
+    {
+    	inBufHandle->read = 0;
+    	inBufHandle->write = 0;
+    	inBufHandle->full = false;
+    }
+}
+
 cbuf_handle_t circular_buf_init(size_t inSize)
 {
 	assert(inSize);
@@ -86,7 +96,7 @@ cbuf_handle_t circular_buf_init(size_t inSize)
 
 	assert(iter->next->data);
 
-	iter->next->data->buffer = (uint8_t*)malloc(sizeof(uint8_t)*inSize);
+	iter->next->data->buffer = (uint32_t*)malloc(sizeof(uint32_t)*inSize);
 	assert(iter->next->data->buffer);
 	iter->next->data->max = inSize;
 	iter->next->data->write = 0;
@@ -132,7 +142,7 @@ buff_err circular_buf_resize(cbuf_handle_t* inOutBufHandle, size_t inSize)
 		cbuf_handle_t newBuf = circular_buf_init(inSize);
 
 		// copy contents from old buffer
-		uint8_t ch;
+		uint32_t ch;
 		while(circular_buf_pop(*inOutBufHandle, &ch) == buff_err_success)
 		{
 			circular_buf_push(newBuf, ch);
@@ -149,30 +159,31 @@ buff_err circular_buf_resize(cbuf_handle_t* inOutBufHandle, size_t inSize)
 	return buff_err_invalid;
 }
 
-buff_err circular_buf_push(cbuf_handle_t inBufHandle, uint8_t inData)
+buff_err circular_buf_push(cbuf_handle_t inBufHandle, uint32_t inData)
 {
-	buff_err err = buff_err_invalid;
+	buff_err err = buff_err_success;
 
 	if(bufferIsOwned(inBufHandle))
 	{
-		if(circular_buf_full(inBufHandle))
-			return buff_err_full;
-
 		inBufHandle->buffer[inBufHandle->write] = inData;
 		if(inBufHandle->full)
 		{
+			// wrap
 			inBufHandle->read = (inBufHandle->read + 1) % inBufHandle->max;
+			err = buff_err_full; // won't fail, just alert about wrap
 		}
 
 		inBufHandle->write = (inBufHandle->write + 1) % inBufHandle->max;
 		inBufHandle->full = (inBufHandle->write == inBufHandle->read);
-		err = buff_err_success;
-
+	}
+	else
+	{
+		err = buff_err_invalid;
 	}
 	return err;
 }
 
-buff_err circular_buf_push_resize(cbuf_handle_t* inOutBufHandle, uint8_t inData)
+buff_err circular_buf_push_resize(cbuf_handle_t* inOutBufHandle, uint32_t inData)
 {
 	buff_err err = buff_err_invalid;
 	if(inOutBufHandle)
@@ -205,7 +216,7 @@ buff_err circular_buf_push_resize(cbuf_handle_t* inOutBufHandle, uint8_t inData)
 	return err;
 }
 
-buff_err circular_buf_pop(cbuf_handle_t inBufHandle, uint8_t * outData)
+buff_err circular_buf_pop(cbuf_handle_t inBufHandle, uint32_t * outData)
 {
 	buff_err err = buff_err_invalid;
 	if(bufferIsOwned(inBufHandle))

@@ -6,6 +6,7 @@
 C_SRCS += \
 ../source/circular_buffer.c \
 ../source/dac_adc.c \
+../source/dma.c \
 ../source/handle_led.c \
 ../source/logger.c \
 ../source/main.c \
@@ -14,12 +15,14 @@ C_SRCS += \
 ../source/semihost_hardfault.c \
 ../source/setup_teardown.c \
 ../source/sine.c \
+../source/tasks.c \
 ../source/time.c \
 ../source/uart.c 
 
 OBJS += \
 ./source/circular_buffer.o \
 ./source/dac_adc.o \
+./source/dma.o \
 ./source/handle_led.o \
 ./source/logger.o \
 ./source/main.o \
@@ -28,12 +31,14 @@ OBJS += \
 ./source/semihost_hardfault.o \
 ./source/setup_teardown.o \
 ./source/sine.o \
+./source/tasks.o \
 ./source/time.o \
 ./source/uart.o 
 
 C_DEPS += \
 ./source/circular_buffer.d \
 ./source/dac_adc.d \
+./source/dma.d \
 ./source/handle_led.d \
 ./source/logger.d \
 ./source/main.d \
@@ -42,6 +47,7 @@ C_DEPS += \
 ./source/semihost_hardfault.d \
 ./source/setup_teardown.d \
 ./source/sine.d \
+./source/tasks.d \
 ./source/time.d \
 ./source/uart.d 
 

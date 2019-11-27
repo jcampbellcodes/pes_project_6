@@ -8,7 +8,8 @@
 #include "clock_config.h"
 
 
-
+static adc16_config_t sAdc16ConfigStruct;
+static adc16_channel_config_t sAdc16ChannelConfigStruct;
 
 void dac_init()
 {
@@ -33,21 +34,31 @@ void dac_init()
 
 void adc_init()
 {
-	adc16_config_t adc16ConfigStruct;
-    ADC16_GetDefaultConfig(&adc16ConfigStruct);
-    ADC16_Init(ADC0, &adc16ConfigStruct);
+    ADC16_GetDefaultConfig(&sAdc16ConfigStruct);
+    ADC16_Init(ADC0, &sAdc16ConfigStruct);
 
     /* Make sure the software trigger is used. */
     ADC16_EnableHardwareTrigger(ADC0, false);
 
-
     /* Prepare ADC channel setting */
-    //g_adc16ChannelConfigStruct.channelNumber = 0U;
-    //g_adc16ChannelConfigStruct.enableInterruptOnConversionCompleted = true;
-
+    sAdc16ChannelConfigStruct.channelNumber = 0U;
+    sAdc16ChannelConfigStruct.enableInterruptOnConversionCompleted = false;
 }
+
 // TODO error code
 void write_dac(uint32_t inVal)
 {
 	DAC_SetBufferValue(DAC0, 0U, inVal);
+}
+
+uint32_t read_adc()
+{
+	ADC16_SetChannelConfig(ADC0, 0U, &sAdc16ChannelConfigStruct);
+
+	// TODO: Don't block here maybe?
+	while (0U == (kADC16_ChannelConversionDoneFlag &
+				  ADC16_GetChannelStatusFlags(ADC0, 0U)))
+	{
+	}
+	return ADC16_GetChannelConversionValue(ADC0, 0U);
 }

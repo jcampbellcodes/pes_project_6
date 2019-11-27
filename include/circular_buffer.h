@@ -36,7 +36,7 @@ typedef enum buff_err {
  * @brief Opaque struct for circular buffer
  */
 typedef struct circular_buf_t {
-	uint8_t * buffer;
+	uint32_t * buffer;
 	size_t write;
 	size_t read;
 	size_t max;
@@ -75,7 +75,7 @@ buff_err circular_buf_resize(cbuf_handle_t* inOutBufHandle, size_t inSize);
  * @param inData Data to push into the buffer
  * @return Whether the operation succeeded. Errors if not.
  */
-buff_err circular_buf_push(cbuf_handle_t inBufHandle, uint8_t inData);
+buff_err circular_buf_push(cbuf_handle_t inBufHandle, uint32_t inData);
 
 /**
  * @brief Push a new element to the circular buffer, resizing if full
@@ -83,7 +83,7 @@ buff_err circular_buf_push(cbuf_handle_t inBufHandle, uint8_t inData);
  * @param inData The data to push
  * @return Whether the operation succeeded
  */
-buff_err circular_buf_push_resize(cbuf_handle_t* inOutBufHandle, uint8_t inData);
+buff_err circular_buf_push_resize(cbuf_handle_t* inOutBufHandle, uint32_t inData);
 
 /**
  * @brief Pop an element from the buffer
@@ -91,7 +91,7 @@ buff_err circular_buf_push_resize(cbuf_handle_t* inOutBufHandle, uint8_t inData)
  * @param outData The data accessed
  * @return Whether the operation was successful. Error if empty.
  */
-buff_err circular_buf_pop(cbuf_handle_t inBufHandle, uint8_t * outData);
+buff_err circular_buf_pop(cbuf_handle_t inBufHandle, uint32_t * outData);
 
 /**
  * @brief Return whether the buffer is empty
@@ -120,6 +120,8 @@ size_t circular_buf_capacity(cbuf_handle_t inBufHandle);
  * @return
  */
 size_t circular_buf_size(cbuf_handle_t inBufHandle);
+
+void circular_buf_reset(cbuf_handle_t cbuf);
 
 #endif
 
