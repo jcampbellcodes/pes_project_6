@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // populate lookup
-void init_sine();
+void sine_init();
 
 // get next sine sample
 uint32_t get_next_sine_sample();

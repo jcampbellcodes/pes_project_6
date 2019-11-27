@@ -6,21 +6,18 @@
 C_SRCS += \
 ../board/board.c \
 ../board/clock_config.c \
-../board/fsl_dac.c \
 ../board/peripherals.c \
 ../board/pin_mux.c 
 
 OBJS += \
 ./board/board.o \
 ./board/clock_config.o \
-./board/fsl_dac.o \
 ./board/peripherals.o \
 ./board/pin_mux.o 
 
 C_DEPS += \
 ./board/board.d \
 ./board/clock_config.d \
-./board/fsl_dac.d \
 ./board/peripherals.d \
 ./board/pin_mux.d 
 

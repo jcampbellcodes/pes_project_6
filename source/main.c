@@ -18,7 +18,7 @@
 #include "pin_mux.h"
 
 #include "setup_teardown.h"
-#include "dac.h"
+#include "dac_adc.h"
 #include "sine.h"
 #include "logger.h"
 

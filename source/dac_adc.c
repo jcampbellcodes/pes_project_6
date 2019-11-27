@@ -1,7 +1,8 @@
-#include "dac.h"
+#include "dac_adc.h"
 
 #include "board.h"
 #include "fsl_dac.h"
+#include "fsl_adc16.h"
 
 #include "pin_mux.h"
 #include "clock_config.h"
@@ -9,7 +10,7 @@
 
 
 
-void init_dac()
+void dac_init()
 {
 	// TAKEN FROM SDK
     dac_config_t dacConfigStruct;
@@ -30,6 +31,21 @@ void init_dac()
 
 }
 
+void adc_init()
+{
+	adc16_config_t adc16ConfigStruct;
+    ADC16_GetDefaultConfig(&adc16ConfigStruct);
+    ADC16_Init(ADC0, &adc16ConfigStruct);
+
+    /* Make sure the software trigger is used. */
+    ADC16_EnableHardwareTrigger(ADC0, false);
+
+
+    /* Prepare ADC channel setting */
+    //g_adc16ChannelConfigStruct.channelNumber = 0U;
+    //g_adc16ChannelConfigStruct.enableInterruptOnConversionCompleted = true;
+
+}
 // TODO error code
 void write_dac(uint32_t inVal)
 {

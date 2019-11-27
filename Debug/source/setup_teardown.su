@@ -1,3 +1,5 @@
-setup_teardown.c:46:6:initialize	32	static
-setup_teardown.c:95:13:SwTimerCallback	32	static
-setup_teardown.c:119:6:terminate	8	static
+setup_teardown.c:49:6:initialize	32	static
+setup_teardown.c:106:13:write_dac0_task	32	static
+setup_teardown.c:127:13:read_adc0_task	16	static
+setup_teardown.c:131:13:dma_transfer_complete	16	static
+setup_teardown.c:142:6:terminate	8	static
