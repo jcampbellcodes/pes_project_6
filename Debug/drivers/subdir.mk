@@ -8,6 +8,8 @@ C_SRCS += \
 ../drivers/fsl_clock.c \
 ../drivers/fsl_common.c \
 ../drivers/fsl_dac.c \
+../drivers/fsl_dma.c \
+../drivers/fsl_dmamux.c \
 ../drivers/fsl_flash.c \
 ../drivers/fsl_gpio.c \
 ../drivers/fsl_lpsci.c \
@@ -21,6 +23,8 @@ OBJS += \
 ./drivers/fsl_clock.o \
 ./drivers/fsl_common.o \
 ./drivers/fsl_dac.o \
+./drivers/fsl_dma.o \
+./drivers/fsl_dmamux.o \
 ./drivers/fsl_flash.o \
 ./drivers/fsl_gpio.o \
 ./drivers/fsl_lpsci.o \
@@ -34,6 +38,8 @@ C_DEPS += \
 ./drivers/fsl_clock.d \
 ./drivers/fsl_common.d \
 ./drivers/fsl_dac.d \
+./drivers/fsl_dma.d \
+./drivers/fsl_dmamux.d \
 ./drivers/fsl_flash.d \
 ./drivers/fsl_gpio.d \
 ./drivers/fsl_lpsci.d \

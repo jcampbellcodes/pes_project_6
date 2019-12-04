@@ -231,7 +231,7 @@ void UART0_IRQHandler(void) {
 		// can send another character
 		if (!circular_buf_empty(sTxBuffer))
 		{
-			uint8_t outCh = -1;
+			uint32_t outCh = -1;
 			if(circular_buf_pop(sTxBuffer, &outCh) == buff_err_success)
 			{
 			  UART0->D = outCh;

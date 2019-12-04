@@ -80,6 +80,17 @@ void circular_buf_reset(cbuf_handle_t inBufHandle)
     }
 }
 
+void circular_buf_copy(cbuf_handle_t fromBufHandle,
+		               cbuf_handle_t toBufHandle)
+{
+    if(bufferIsOwned(fromBufHandle) && bufferIsOwned(toBufHandle))
+    {
+    	toBufHandle->read = fromBufHandle->read;
+    	toBufHandle->write = fromBufHandle->write;
+    	toBufHandle->full = fromBufHandle->full;
+    }
+}
+
 cbuf_handle_t circular_buf_init(size_t inSize)
 {
 	assert(inSize);

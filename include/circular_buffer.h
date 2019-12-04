@@ -123,5 +123,8 @@ size_t circular_buf_size(cbuf_handle_t inBufHandle);
 
 void circular_buf_reset(cbuf_handle_t cbuf);
 
+void circular_buf_copy(cbuf_handle_t fromBufHandle,
+		               cbuf_handle_t toBufHandle);
+
 #endif
 

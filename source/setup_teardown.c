@@ -34,6 +34,7 @@
 #include "dac_adc.h"
 #include "MKL25Z4.h"
 #include "uart.h"
+#include "dma.h"
 
 void initialize()
 {
@@ -63,6 +64,7 @@ void initialize()
     sine_init();
     dac_init();
     adc_init();
+    dma_init();
     power_on_self_test();
 
     tasks_init();
