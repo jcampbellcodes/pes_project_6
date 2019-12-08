@@ -22,7 +22,7 @@ void DMA0_DriverIRQHandler(void)
 // taken from https://github.com/alexander-g-dean/ESF/blob/master/Code/Chapter_9/DMA_Examples/Source/DMA.c
 void dma_init(void* cookie)
 {
-	LOG_STRING(LOG_MODULE_DMA, LOG_SEVERITY_DEBUG, "Initialize DMA.");
+	LOG_STRING(LOG_MODULE_DMA, LOG_SEVERITY_STATUS, "Initialize DMA.");
 	SIM->SCGC7 |= SIM_SCGC7_DMA_MASK;
 	DMA0->DMA[0].DCR = DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(0) |
 		DMA_DCR_DINC_MASK |	DMA_DCR_DSIZE(0);
@@ -42,7 +42,7 @@ void dma_transfer(uint32_t* srcAddr,
                   uint32_t transferCount,
 				  dma_callback inCallback)
 {
-	LOG_STRING(LOG_MODULE_MAIN, LOG_SEVERITY_DEBUG, "DMA transfer.");
+	LOG_STRING(LOG_MODULE_MAIN, LOG_SEVERITY_STATUS, "DMA transfer.");
 	// initialize source and destination pointers
 	DMA0->DMA[0].SAR = DMA_SAR_SAR((uint32_t) srcAddr);
 	DMA0->DMA[0].DAR = DMA_DAR_DAR((uint32_t) destAddr);

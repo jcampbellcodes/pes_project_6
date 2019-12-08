@@ -17,8 +17,8 @@
 static TimerHandle_t writeTimerHandle = NULL;
 static TimerHandle_t readTimerHandle = NULL;
 
-static uint64_t sLastDMAStart = 0;
-static uint64_t sLastDMAFinish = 0;
+static timestamp_str sLastDMAStart;
+static timestamp_str sLastDMAFinish;
 
 // taken from dac/adc example
 #define VREF_BRD 3.300
@@ -36,7 +36,7 @@ struct Buffers
 
 void turn_off_dma_led(void *pvParameters)
 {
-	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Turn off blue LED triggered by DMA transfer.");
+	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn off blue LED triggered by DMA transfer.");
 	set_led(0, BLUE);
 }
 
@@ -104,19 +104,32 @@ void dsp_callback(void *pvParameters)
 	 * Report those values along with an incremented run number
 	 * starting at 1 and the start time and end time for the last DMA transfer.
 	 */
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Run #%d. DMA [Start : Finish] stamps: [ %lu : %lu ]:", sRunNumber, sLastDMAStart, sLastDMAFinish);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Run #%d",
+			sRunNumber);
+
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Last DMA start: [ %s%s%s%s ]:",
+			sLastDMAStart.hours,
+			sLastDMAStart.mins,
+			sLastDMAStart.secs,
+			sLastDMAStart.tens);
+
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Last DMA finish: [ %s%s%s%s ]:",
+			sLastDMAFinish.hours,
+			sLastDMAFinish.mins,
+			sLastDMAFinish.secs,
+			sLastDMAFinish.tens);
 
 	// report max
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Maximum voltage: %f", sMaxVoltage);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Maximum voltage: %f", sMaxVoltage);
 
 	// report min
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Minimum voltage: %f", sMinVoltage);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Minimum voltage: %f", sMinVoltage);
 
 	// report avg
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Average voltage: %f", sAverageVoltage);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Average voltage: %f", sAverageVoltage);
 
 	// report st deviation
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Standard deviation voltage: %f", sStDeviationVoltage);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Standard deviation voltage: %f", sStDeviationVoltage);
 
 	/**
 	 * Once run number 5 is completed and reported, terminate the
@@ -124,7 +137,7 @@ void dsp_callback(void *pvParameters)
 	 */
 	if(sRunNumber >= NUM_RUNS)
 	{
-		LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Exiting app.", sRunNumber);
+		LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Exiting app.", sRunNumber);
 
 		xTimerStop(writeTimerHandle, 0);
 		xTimerStop(readTimerHandle, 0);
@@ -139,7 +152,8 @@ void DMA_Callback()
 	circular_buf_copy(sBuffers.adcBuffer, sBuffers.dspBuffer);
 	circular_buf_reset(sBuffers.adcBuffer);
 	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "DMA Transfer completed.");
-	sLastDMAFinish = time_now();
+
+	timestamp_now(&sLastDMAFinish);
 
 	if(xTaskCreate(dsp_callback, "DSP Callback", configMINIMAL_STACK_SIZE + 512, NULL, (configMAX_PRIORITIES - 1), NULL) != pdPASS)
 	{
@@ -151,7 +165,7 @@ void DMA_Callback()
 void tasks_init()
 {
 
-    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Create .1 second timer to write sine values to the DAC.");
+    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Create .1 second timer to write sine values to the DAC.");
     /* Create the software timer. */
     writeTimerHandle = xTimerCreate("DAC Write Timer",          /* Text name. */
     		                     pdMS_TO_TICKS(100), /* Timer period. */
@@ -162,7 +176,7 @@ void tasks_init()
 
     // program 1 only cares about writing to the DAC0_OUT
 #ifndef PROGRAM_1
-    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Create .1 second timer to read sine values from the ADC.");
+    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Create .1 second timer to read sine values from the ADC.");
     /* Create the software timer. */
     readTimerHandle = xTimerCreate("ADC READ Timer",          /* Text name. */
     		                     pdMS_TO_TICKS(100), /* Timer period. */
@@ -171,7 +185,7 @@ void tasks_init()
 								 read_adc0_task);   /* The callback function. */
     xTimerStart(readTimerHandle, 0);
 
-    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Create DSP and ADC buffers.");
+    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Create DSP and ADC buffers.");
     sBuffers.adcBuffer = circular_buf_init(BUFFER_CAPACITY);
     sBuffers.dspBuffer = circular_buf_init(BUFFER_CAPACITY);
     // need to init post-scheduler start
@@ -189,7 +203,7 @@ void write_dac0_task(TimerHandle_t xTimer)
 {
 	static int ledVal = 0;
 	uint32_t sineVal = get_next_sine_sample();
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_TEST, "Writing %d to the DAC.", sineVal);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Writing %d to the DAC.", sineVal);
     /**
      * apply the values from the lookup table to DAC0_OUT (pin J10-11) every .1 second,
      * repeating from the beginning of the table once the last value is applied.
@@ -198,11 +212,11 @@ void write_dac0_task(TimerHandle_t xTimer)
 	write_dac(sineVal);
 
 #ifdef PROGRAM_1
-	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_TEST, "Toggle blue led for program 1 DAC write.");
+	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Toggle blue led for program 1 DAC write.");
 	set_led(ledVal, BLUE);
 #else
 	// todo : add synchronization primitives here
-	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_TEST, "Toggle green led for program 2 DAC write.");
+	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Toggle green led for program 2 DAC write.");
 	set_led(ledVal, GREEN);
 #endif
 	ledVal = !ledVal;
@@ -221,7 +235,7 @@ void read_adc0_task(TimerHandle_t xTimer)
     */
 
 	uint32_t sample = read_adc();
-	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_TEST, "Reading %d from the ADC.", sample);
+	LOG_STRING_ARGS(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Reading %d from the ADC.", sample);
 	if(circular_buf_push(sBuffers.adcBuffer, sample) == buff_err_full)
 	{
 		 // When the buffer is full, initiate a DMA transfer from the ADC buffer to a second
@@ -232,7 +246,7 @@ void read_adc0_task(TimerHandle_t xTimer)
 
 		 Capture a time stamp at the start and completion of the DMA transfer.
 		 */
-		LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Turn on blue LED triggered by DMA transfer.");
+		LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn on blue LED triggered by DMA transfer.");
 		set_led(1, BLUE);
 	    TimerHandle_t startTransferTimer = NULL;
 	    startTransferTimer = xTimerCreate("Start DMA timer",          /* Text name. */
@@ -242,14 +256,14 @@ void read_adc0_task(TimerHandle_t xTimer)
 										  turn_off_dma_led);   /* The callback function. */
 	    xTimerStart(startTransferTimer, 0);
 
-	    sLastDMAStart = time_now();
+	    timestamp_now(&sLastDMAStart);
 	    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "DMA Transfer started.");
 	    dma_transfer(sBuffers.adcBuffer->buffer,
 	    		     sBuffers.dspBuffer->buffer,
 					 BUFFER_CAPACITY,
 					 DMA_Callback);
 
-	    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_TEST, "DMA Transfer claimed to complete.");
+	    LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "DMA Transfer claimed to complete.");
 	}
 
 	/*

@@ -1,0 +1,10 @@
+core_cm0plus.h:745:22:NVIC_EnableIRQ	16	static
+core_cm0plus.h:756:22:NVIC_DisableIRQ	16	static
+uart.c:47:6:uart_init	32	static
+uart.c:124:6:uart_putchar_space_available	8	static
+uart.c:130:6:uart_getchar_present	8	static
+uart.c:136:6:uart_putchar	16	static
+uart.c:146:6:uart_getchar	16	static
+uart.c:160:6:uart_put_string	16	static
+uart.c:167:6:uart_echo	32	static
+uart.c:191:6:UART0_IRQHandler	16	static

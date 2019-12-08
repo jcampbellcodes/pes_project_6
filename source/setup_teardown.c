@@ -36,6 +36,8 @@
 #include "uart.h"
 #include "dma.h"
 
+#define UART_BAUD_RATE 115200
+
 void initialize()
 {
     /* Init board hardware. */
@@ -57,7 +59,7 @@ void initialize()
 #else
 	log_enable(LOG_SEVERITY_STATUS);
 #endif
-	uart_init(115200); // todo define this
+	uart_init(UART_BAUD_RATE); // todo define this
 	time_init();
     leds_init();
     sine_init();

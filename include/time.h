@@ -10,12 +10,22 @@
  *         ARM Compiler: GNU gcc version 8.2.1 20181213
  *         ARM Linker: GNU ld 2.31.51.20181213
  *         ARM Debugger: GNU gdb 8.2.50.20181213-git
+ *
+ *
  */
 
 #ifndef __timeh__
 #define __timeh__
 
 #include <stdint.h>
+// from https://stackoverflow.com/questions/4523497/typedef-fixed-length-array/4523537
+typedef struct timestamp_str
+{
+	char hours[4];
+	char mins[4];
+	char secs[4];
+	char tens[4];
+} timestamp_str;
 
 /**
  * @brief Initialize the time module
@@ -33,5 +43,7 @@ uint64_t time_passed(uint64_t since);
  * @brief Return current time in tenth of a second
  */
 uint64_t time_now();
+
+void timestamp_now(timestamp_str* outTimestamp);
 
 #endif

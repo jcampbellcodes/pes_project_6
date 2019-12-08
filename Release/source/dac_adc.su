@@ -1,0 +1,5 @@
+dac_adc.c:12:6:ADC0_IRQHandler	0	static
+dac_adc.c:22:6:dac_init	16	static
+dac_adc.c:43:6:adc_init	16	static
+dac_adc.c:58:6:write_dac	8	static
+dac_adc.c:63:10:read_adc	16	static

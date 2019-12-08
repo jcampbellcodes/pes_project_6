@@ -1,0 +1,6 @@
+tasks.c:37:6:turn_off_dma_led	16	static
+tasks.c:43:6:dsp_callback	320	static
+tasks.c:149:6:DMA_Callback	16	static
+tasks.c:165:6:tasks_init	24	static
+tasks.c:202:6:write_dac0_task	32	static
+tasks.c:225:6:read_adc0_task	32	static

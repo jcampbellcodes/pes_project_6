@@ -21,6 +21,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
+#include "time.h"
+#include <stdio.h>
 
 /* The software timer period. */
 #define SW_TIMER_PERIOD_MS ( 10 / portTICK_PERIOD_MS )
@@ -68,5 +70,18 @@ uint64_t time_passed(uint64_t since)
 uint64_t time_now()
 {
 	return gSystemTime;
+}
+
+void timestamp_now(timestamp_str* outTimestamp)
+{
+	uint64_t tenths_seconds = time_now();
+	float now = tenths_seconds / 10;
+	uint64_t hours = (uint64_t)(now/3600)%60;
+	uint64_t minutes = (uint64_t)(now/60)%60;
+	uint64_t seconds = (uint64_t)(now)%60;
+	sprintf((outTimestamp->hours), "%02d:",  hours);
+	sprintf((outTimestamp->mins),  "%02d:",  minutes);
+	sprintf((outTimestamp->secs),  "%02d",  seconds);
+	sprintf((outTimestamp->tens),  ".%1d ",  tenths_seconds%10);
 }
 

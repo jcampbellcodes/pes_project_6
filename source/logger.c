@@ -62,25 +62,13 @@ static const char* sLogModuleStrings[NUM_LOG_MODULES] =
  */
 static void PRINT_TIME_STAMP()
 {
-	static char format_buf[ARRLEN] = {0};
-	for(int i = 0; i < ARRLEN; i++) format_buf[i] = '\0';
+	timestamp_str timestamp;
+	timestamp_now(&timestamp);
 
-	uint64_t tenths_seconds = time_now();
-
-	float now = tenths_seconds / 10;
-
-	uint64_t hours = (uint64_t)(now/3600)%60;
-	uint64_t minutes = (uint64_t)(now/60)%60;
-	uint64_t seconds = (uint64_t)(now)%60;
-
-	sprintf(format_buf, "%02d:",  hours);
-	uart_put_string(format_buf);
-	sprintf(format_buf, "%02d:",  minutes);
-	uart_put_string(format_buf);
-	sprintf(format_buf, "%02d",  seconds);
-	uart_put_string(format_buf);
-	sprintf(format_buf, ".%1d ",  tenths_seconds%10);
-	uart_put_string(format_buf);
+	uart_put_string(timestamp.hours);
+	uart_put_string(timestamp.mins);
+	uart_put_string(timestamp.secs);
+	uart_put_string(timestamp.tens);
 }
 
 /**
