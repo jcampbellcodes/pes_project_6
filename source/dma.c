@@ -1,41 +1,48 @@
 #include "dma.h"
-//#include "fsl_dma.h"
-//#include "fsl_dmamux.h"
+
+/* Kernel includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
+
 #include "MKL25Z4.h"
 #include "logger.h"
-dma_handle_t g_DMA_Handle;
+
+static dma_callback sCurrentCallback = NULL;
+volatile bool g_DMADoneFlag = false;
+void DMA0_DriverIRQHandler(void)
+{
+	g_DMADoneFlag = true;
+	// mark end of transfer
+	// Control_RGB_LEDs(0,0,0); TODO: Turn off leds here?
+	if(sCurrentCallback)
+		sCurrentCallback();
+}
 
 // taken from https://github.com/alexander-g-dean/ESF/blob/master/Code/Chapter_9/DMA_Examples/Source/DMA.c
-
-void dma_init()
+void dma_init(void* cookie)
 {
-//    /* Configure DMAMUX */
-//    DMAMUX_Init(DMAMUX0);
-//    DMAMUX_SetSource(DMAMUX0, 0, 0);
-//    DMAMUX_EnableChannel(DMAMUX0, 0);
+	LOG_STRING(LOG_MODULE_DMA, LOG_SEVERITY_DEBUG, "Initialize DMA.");
 	SIM->SCGC7 |= SIM_SCGC7_DMA_MASK;
 	DMA0->DMA[0].DCR = DMA_DCR_SINC_MASK | DMA_DCR_SSIZE(0) |
 		DMA_DCR_DINC_MASK |	DMA_DCR_DSIZE(0);
+
+//	NVIC_SetPriority(DMA0_IRQn, 3);
+//	NVIC_ClearPendingIRQ(DMA0_IRQn);
+//	NVIC_EnableIRQ(DMA0_IRQn);
+
+//	while(1)
+//	{
+//		vTaskSuspend(NULL);
+//	}
 }
 
 void dma_transfer(uint32_t* srcAddr,
                   uint32_t* destAddr,
-                  uint32_t transferCount)
+                  uint32_t transferCount,
+				  dma_callback inCallback)
 {
-//    dma_transfer_config_t transferConfig;
-//    /* Configure DMA one shot transfer */
-//    DMA_Init(DMA0);
-//    DMA_CreateHandle(&g_DMA_Handle, DMA0, 0U);
-//    DMA_SetCallback(&g_DMA_Handle, dmaCallback, NULL);
-//    DMA_PrepareTransfer(&transferConfig, srcAddr, sizeof(uint32_t), destAddr, sizeof(uint32_t), transferBytes,
-//                        kDMA_MemoryToMemory);
-//    if(DMA_SubmitTransfer(&g_DMA_Handle, &transferConfig, kDMA_EnableInterrupt) != kStatus_Success)
-//    {
-//    	LOG_STRING(LOG_MODULE_SETUP_TEARDOWN, LOG_SEVERITY_DEBUG, "DMA Transfer Failed!!");
-//    }
-//    DMA_StartTransfer(&g_DMA_Handle);
-
-
+	LOG_STRING(LOG_MODULE_MAIN, LOG_SEVERITY_DEBUG, "DMA transfer.");
 	// initialize source and destination pointers
 	DMA0->DMA[0].SAR = DMA_SAR_SAR((uint32_t) srcAddr);
 	DMA0->DMA[0].DAR = DMA_DAR_DAR((uint32_t) destAddr);
@@ -44,14 +51,18 @@ void dma_transfer(uint32_t* srcAddr,
 	// clear done flag and status flags
 	DMA0->DMA[0].DSR_BCR &= ~DMA_DSR_BCR_DONE_MASK;
 
+	sCurrentCallback = inCallback;
+
 	// start transfer
-	//Control_RGB_LEDs(0,0,1); TODO: Turn on LEDs here?
 	DMA0->DMA[0].DCR |= DMA_DCR_START_MASK;
-	// mark start of transfer
 
 	// wait until it is done
 	while (!(DMA0->DMA[0].DSR_BCR & DMA_DSR_BCR_DONE_MASK))
 		;
-	// mark end of transfer
-	// Control_RGB_LEDs(0,0,0); TODO: Turn off leds here?
+
+	sCurrentCallback();
+
+//	while(!g_DMADoneFlag);
+//	g_DMADoneFlag = false;
+
 }

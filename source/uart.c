@@ -22,7 +22,7 @@
 /**
  * How many characters we want to initially request for the circular buffer
  */
-#define UART_CAPACITY 256
+#define UART_CAPACITY 100
 
 /**
  * Transmit circular buffer

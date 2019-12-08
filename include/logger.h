@@ -31,6 +31,7 @@ typedef enum LogSeverity
 	NUM_LOG_SEVERITIES
 } LogSeverity_t;
 
+
 /**
  * @brief The module associated with a log message.
  */
@@ -38,12 +39,14 @@ typedef enum LogModule
 {
 	LOG_MODULE_MAIN,
 	LOG_MODULE_LED,
-	LOG_MODULE_UNIT_TEST,
+	LOG_MODULE_DMA,
 	LOG_MODULE_SETUP_TEARDOWN,
 	LOG_MODULE_CIRCULAR_BUFFER,
+	LOG_MODULE_TASKS,
 	LOG_MODULE_TIME,
 	LOG_MODULE_POST,
 	LOG_MODULE_UART,
+	LOG_MODULE_SINE,
 	NUM_LOG_MODULES
 } LogModule_t;
 

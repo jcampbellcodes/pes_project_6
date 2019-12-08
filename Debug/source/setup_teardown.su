@@ -1,2 +1,2 @@
 setup_teardown.c:39:6:initialize	16	static
-setup_teardown.c:80:6:terminate	8	static
+setup_teardown.c:79:6:terminate	8	static

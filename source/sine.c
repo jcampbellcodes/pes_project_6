@@ -34,23 +34,24 @@ void sine_init()
 	// try to figure out how to generate the lookup table above
 	uint64_t voltage_offset = 2;
 	// generate a sine wave, between 1V and 3V: sin(x) = A*sin(x)+2
+	LOG_STRING(LOG_MODULE_SINE, LOG_SEVERITY_DEBUG, "Calculate and create a lookup table to represent the values in a sine wave that runs from 1V to 3V.");
 	for(int x =0; x < NUM_SINE_SAMPLES; x++)
 	{
 		sSineLookup[x] = (sin((2.0 * M_PI * (x/(float)(NUM_SINE_SAMPLES)))) + voltage_offset) * sDigitalConversionFactor;
 		if(sSineLookup[x] > 4095)
 		{
 			set_led(1, RED);
-			LOG_STRING_ARGS(LOG_MODULE_MAIN, LOG_SEVERITY_TEST, "Value [%d] out of range. Setting to 0.", sSineLookup[x]);
+			LOG_STRING_ARGS(LOG_MODULE_SINE, LOG_SEVERITY_DEBUG, "Value [%d] out of range. Setting to 0.", sSineLookup[x]);
 			sSineLookup[x] = 0;
 		}
 		else
 		{
-			LOG_STRING_ARGS(LOG_MODULE_MAIN, LOG_SEVERITY_TEST, "Writing [%d] to the temp table.", sSineLookup[x]);
+			LOG_STRING_ARGS(LOG_MODULE_SINE, LOG_SEVERITY_DEBUG, "Writing [%d] to the temp table.", sSineLookup[x]);
 		}
 
 	}
 
-	LOG_STRING(LOG_MODULE_MAIN, LOG_SEVERITY_DEBUG, "Sine initialized.");
+	LOG_STRING(LOG_MODULE_SINE, LOG_SEVERITY_DEBUG, "Sine initialized.");
 }
 
 // get next sine sample

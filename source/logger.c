@@ -47,12 +47,14 @@ static const char* sLogModuleStrings[NUM_LOG_MODULES] =
 {
 		"MAIN",
 		"LED",
-		"UNIT_TEST",
+		"DMA",
 		"SETUP_TEARDOWN",
 		"CIRCULAR_BUFFER",
+		"TASKS",
 		"TIME",
 		"POST",
-        "UART"
+        "UART",
+		"SINE"
 };
 
 /**

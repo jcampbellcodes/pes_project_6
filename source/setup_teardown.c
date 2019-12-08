@@ -44,7 +44,6 @@ void initialize()
     BOARD_InitDebugConsole();
     SystemCoreClockUpdate();
 
-
   	/* Init board hardware. */
 	 /* Enable all of the port clocks. */
 	SIM->SCGC5 |= (SIM_SCGC5_PORTA_MASK
@@ -64,7 +63,7 @@ void initialize()
     sine_init();
     dac_init();
     adc_init();
-    dma_init();
+    dma_init(NULL);
     power_on_self_test();
 
     tasks_init();

@@ -7,6 +7,14 @@
 #include "pin_mux.h"
 #include "clock_config.h"
 
+volatile bool g_Adc16ConversionDoneFlag = false;
+volatile uint32_t g_Adc16ConversionValue = 0;
+void ADC0_IRQHandler(void)
+{
+    g_Adc16ConversionDoneFlag = true;
+    /* Read conversion result to clear the conversion completed flag. */
+    g_Adc16ConversionValue = ADC16_GetChannelConversionValue(ADC0, 0U);
+}
 
 static adc16_config_t sAdc16ConfigStruct;
 static adc16_channel_config_t sAdc16ChannelConfigStruct;
@@ -34,6 +42,7 @@ void dac_init()
 
 void adc_init()
 {
+	//EnableIRQ(ADC0_IRQn);
     ADC16_GetDefaultConfig(&sAdc16ConfigStruct);
     ADC16_Init(ADC0, &sAdc16ConfigStruct);
 
@@ -61,4 +70,9 @@ uint32_t read_adc()
 	{
 	}
 	return ADC16_GetChannelConversionValue(ADC0, 0U);
+
+//	while (!g_Adc16ConversionDoneFlag)
+//	        {
+//	        }
+//	return g_Adc16ConversionValue;
 }
