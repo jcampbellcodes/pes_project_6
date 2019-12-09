@@ -18,6 +18,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
+#include "semphr.h"
 
 #include "post.h"
 #include "tasks.h"
@@ -30,6 +31,8 @@
 #include "time.h"
 #include <float.h>
 #include <math.h>
+
+SemaphoreHandle_t xMutex;
 
 /**
  * Define this to run program 1 or program 2
@@ -105,8 +108,9 @@ void read_adc0_task(TimerHandle_t xTimer);
  */
 void turn_off_dma_led(void *pvParameters)
 {
-	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn off blue LED triggered by DMA transfer.");
+	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn off blue LED triggered by DMA transfer, release mutex.");
 	set_led(0, BLUE);
+	xSemaphoreGive(xMutex);
 }
 
 /**
@@ -233,7 +237,9 @@ void DMA_Callback()
 	if(xTaskCreate(dsp_callback, "DSP Callback", configMINIMAL_STACK_SIZE + 512, NULL, (configMAX_PRIORITIES - 1), NULL) != pdPASS)
 	{
 		LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "DSP task creation failed.");
+	    xSemaphoreTake(xMutex, pdMS_TO_TICKS(1000));
 		set_led(1, RED);
+		xSemaphoreGive(xMutex);
 	}
 }
 
@@ -254,6 +260,8 @@ void tasks_init()
 
     // program 1 only cares about writing to the DAC0_OUT
 #ifndef PROGRAM_1
+    xMutex = xSemaphoreCreateMutex();
+
     LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Create .1 second timer to read sine values from the ADC.");
     /* Create the software timer. */
     readTimerHandle = xTimerCreate("ADC READ Timer",          /* Text name. */
@@ -291,7 +299,10 @@ void write_dac0_task(TimerHandle_t xTimer)
 #else
 	// todo : add synchronization primitives here
 	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_DEBUG, "Toggle green led for program 2 DAC write.");
+
+    xSemaphoreTake(xMutex, pdMS_TO_TICKS(1000));
 	set_led(ledVal, GREEN);
+	xSemaphoreGive(xMutex);
 #endif
 	ledVal = !ledVal;
 }
@@ -319,7 +330,8 @@ void read_adc0_task(TimerHandle_t xTimer)
 
 		 Capture a time stamp at the start and completion of the DMA transfer.
 		 */
-		LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn on blue LED triggered by DMA transfer.");
+		LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn on blue LED triggered by DMA transfer, acquire mutex.");
+	    xSemaphoreTake(xMutex, pdMS_TO_TICKS(1000));
 		set_led(1, BLUE);
 	    TimerHandle_t startTransferTimer = NULL;
 	    startTransferTimer = xTimerCreate("Start DMA timer",          /* Text name. */
