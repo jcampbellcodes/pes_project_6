@@ -1,6 +1,6 @@
 /*
  * @file circular_buffer.c
- * @brief Project 5
+ * @brief Project 6
  *
  * @details This file contains code for a circular buffer.
  *

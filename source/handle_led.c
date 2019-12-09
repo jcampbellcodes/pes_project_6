@@ -1,6 +1,6 @@
 /*
  * @file handle_led.c
- * @brief Project 5
+ * @brief Project 6
  *
  * Functions for handling the state of an LED.
  *
@@ -40,6 +40,9 @@
  */
 #define MASK(x) (1UL << (x))
 
+/**
+ * Flag to ensure that init has been called before LED is set.
+ */
 static uint8_t gLedReady = 0;
 
 void leds_init()

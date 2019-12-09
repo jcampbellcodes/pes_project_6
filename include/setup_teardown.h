@@ -1,6 +1,6 @@
 /*
  * @file setup_teardown.h
- * @brief Project 5
+ * @brief Project 6
  *
  * @details Contains the setup and cleanup prototypes.
  *

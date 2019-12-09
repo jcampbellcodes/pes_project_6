@@ -1,3 +1,23 @@
+/*
+ * @file dma.h
+ * @brief Project 6
+ *
+ * @details This file contains code for using the DMA controller.
+ *
+ * @author Jack Campbell
+ * @tools  PC Compiler: GNU gcc 8.3.0
+ *         PC Linker: GNU ld 2.32
+ *         PC Debugger: GNU gdb 8.2.91.20190405-git
+ *         ARM Compiler: GNU gcc version 8.2.1 20181213
+ *         ARM Linker: GNU ld 2.31.51.20181213
+ *         ARM Debugger: GNU gdb 8.2.50.20181213-git
+ *
+ *  Leveraged code:
+ *  Baremetal DMA code from the Dean example given in class
+ *  https://github.com/alexander-g-dean/ESF/blob/master/Code/Chapter_9/DMA_Examples/Source/DMA.c
+ *
+ */
+
 #include "dma.h"
 
 /* Kernel includes. */
@@ -19,7 +39,7 @@ void DMA0_DriverIRQHandler(void)
 		sCurrentCallback();
 }
 
-// taken from https://github.com/alexander-g-dean/ESF/blob/master/Code/Chapter_9/DMA_Examples/Source/DMA.c
+// taken from
 void dma_init(void* cookie)
 {
 	LOG_STRING(LOG_MODULE_DMA, LOG_SEVERITY_STATUS, "Initialize DMA.");

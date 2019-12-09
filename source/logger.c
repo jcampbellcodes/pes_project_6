@@ -111,31 +111,6 @@ bool log_enabled()
 	return sLoggingEnabled;
 }
 
-void log_data(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSeverity, const uint8_t* inBytes, size_t inSize)
-{
-//	static char format_buf[ARRLEN] = {0};
-//	for(int i = 0; i < ARRLEN; i++) format_buf[i] = '\0';
-//
-//	if (sLoggingEnabled && inSeverity >= sLogSeverity)
-//	{
-//		PRINT_LOG_PREFIX(inModule, inFuncName, inSeverity);
-//		sprintf(format_buf, "\n\rBytes at address %p:\n\r==========================\n\r", inBytes);
-//		uart_put_string(format_buf);
-//		for(int i = 0; i < inSize; i++)
-//		{
-//			sprintf(format_buf, "%2x ", inBytes[i]);
-//			uart_put_string(format_buf);
-//
-//			if((i+1)%4 == 0)
-//			{
-//				uart_put_string("\n\r");
-//			}
-//		}
-//		uart_put_string("\n\r==========================\n\r");
-//	}
-}
-
-
 void log_string(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSeverity, const char* inString, ...)
 {
 	char format_buf[ARRLEN] = {0};
@@ -154,17 +129,3 @@ void log_string(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSe
 	}
 }
 
-
-void log_integer(LogModule_t inModule, const char* inFuncName, LogSeverity_t inSeverity, uint64_t inNum)
-{
-//	static char format_buf[ARRLEN] = {0};
-//	for(int i = 0; i < ARRLEN; i++) format_buf[i] = '\0';
-//
-//	if (sLoggingEnabled && inSeverity >= sLogSeverity)
-//	{
-//		PRINT_LOG_PREFIX(inModule, inFuncName, inSeverity);
-//		sprintf(format_buf, "%lld\n\r", inNum);
-//		uart_put_string(format_buf);
-//		uart_put_string("\n\r");
-//	}
-}

@@ -1,6 +1,6 @@
 /*
  * @file post.h
- * @brief Project 5
+ * @brief Project 6
  *
  * A power on self test.
  *

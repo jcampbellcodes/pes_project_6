@@ -1,4 +1,23 @@
-// LEVERAGED CODE: STANDARD DEVIATION https://www.sanfoundry.com/c-program-mean-variance-standard-deviation/
+/*
+ * @file tasks.h
+ * @brief Project 6
+ *
+ * @details Contains the FreeRTOS tasks for this program.
+ *
+ * @tools  PC Compiler: GNU gcc 8.3.0
+ *         PC Linker: GNU ld 2.32
+ *         PC Debugger: GNU gdb 8.2.91.20190405-git
+ *         ARM Compiler: GNU gcc version 8.2.1 20181213
+ *         ARM Linker: GNU ld 2.31.51.20181213
+ *         ARM Debugger: GNU gdb 8.2.50.20181213-git
+ *  LEVERAGED CODE: STANDARD DEVIATION https://www.sanfoundry.com/c-program-mean-variance-standard-deviation/
+ *  Used to calculate standard deviation.
+ */
+
+/* Kernel includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
 
 #include "post.h"
 #include "tasks.h"
@@ -12,34 +31,87 @@
 #include <float.h>
 #include <math.h>
 
+/**
+ * Define this to run program 1 or program 2
+ */
 //#define PROGRAM_1
 
+/**
+ * The timer handle for writing to the DAC.
+ */
 static TimerHandle_t writeTimerHandle = NULL;
+
+/**
+ * The timer handler for reading from the ADC.
+ */
 static TimerHandle_t readTimerHandle = NULL;
 
+/**
+ * Timestamp string for the start time of the last DMA transfer.
+ */
 static timestamp_str sLastDMAStart;
+
+/**
+ * Timestamp string for the finish time of the last DMA transfer.
+ */
 static timestamp_str sLastDMAFinish;
 
-// taken from dac/adc example
+/**
+ * Voltage reference for reading from the ADC.
+ */
 #define VREF_BRD 3.300
+
+/**
+ * Max 12 bit float val for reading from the ADC.
+ */
 #define SE_12BIT 4096.0
 
+/**
+ * Global buffer struct for the ADC and DSP buffers.
+ */
 struct Buffers
 {
 	cbuf_handle_t adcBuffer;
 	cbuf_handle_t dspBuffer;
 } sBuffers;
 
+/**
+ * Size of ADC and DSP buffers.
+ */
 #define BUFFER_CAPACITY 64
 
+/**
+ * Number of runs for program 2.
+ */
 #define NUM_RUNS 5
 
+/**
+ * Prototypes
+ */
+
+/**
+ * Task to write to the DAC.
+ */
+void write_dac0_task(TimerHandle_t xTimer);
+
+/**
+ * Task to read from the ADC.
+ */
+void read_adc0_task(TimerHandle_t xTimer);
+
+
+/**
+ * One shot timer task to turn off the blue LED.
+ */
 void turn_off_dma_led(void *pvParameters)
 {
 	LOG_STRING(LOG_MODULE_TASKS, LOG_SEVERITY_STATUS, "Turn off blue LED triggered by DMA transfer.");
 	set_led(0, BLUE);
 }
 
+/**
+ * A task that analyzes the DSP buffer after each DMA transfer.
+ */
 void dsp_callback(void *pvParameters)
 {
 	static uint8_t sRunNumber = 0;
@@ -146,6 +218,9 @@ void dsp_callback(void *pvParameters)
 	vTaskDelete(NULL);
 }
 
+/**
+ * Callback for when the DMA transfer has completed.
+ */
 void DMA_Callback()
 {
 	// copies buffer state, not data
@@ -162,6 +237,9 @@ void DMA_Callback()
 	}
 }
 
+/**
+ * Init all the tasks for FreeRTOS.
+ */
 void tasks_init()
 {
 
@@ -195,10 +273,6 @@ void tasks_init()
     vTaskStartScheduler();
 }
 
-
-/*!
- * @brief Software timer callback.
- */
 void write_dac0_task(TimerHandle_t xTimer)
 {
 	static int ledVal = 0;
@@ -231,7 +305,6 @@ void read_adc0_task(TimerHandle_t xTimer)
 
 	 The ADC buffer will be 64 samples long and should contain the
 	 raw ADC register values from each read.
-
     */
 
 	uint32_t sample = read_adc();

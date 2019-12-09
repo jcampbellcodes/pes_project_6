@@ -1,6 +1,6 @@
 /*
  * @file circular_buffer.h
- * @brief Project 5
+ * @brief Project 6
  *
  * @details This file contains code for a circular buffer.
  *
@@ -121,8 +121,17 @@ size_t circular_buf_capacity(cbuf_handle_t inBufHandle);
  */
 size_t circular_buf_size(cbuf_handle_t inBufHandle);
 
+/**
+ * @brief Reset the bookkeeping for the buffer
+ * @param inBufHandle The buffer to reset
+ */
 void circular_buf_reset(cbuf_handle_t cbuf);
 
+/**
+ * @brief Copies the bookkeeping from one buffer to another
+ * @param fromBufHandle The buffer to copy from
+ * @param toBufHandle The buffer to copy to
+ */
 void circular_buf_copy(cbuf_handle_t fromBufHandle,
 		               cbuf_handle_t toBufHandle);
 

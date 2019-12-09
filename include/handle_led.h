@@ -1,6 +1,6 @@
 /*
  * @file handle_led.h
- * @brief Project 5
+ * @brief Project 6
  *
  * @details Contains the prototype for handling LEDs on various platforms.
  *          This may be actually turning an LED on and off or just printing

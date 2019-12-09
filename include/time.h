@@ -1,6 +1,6 @@
 /*
  * @file time.h
- * @brief Project 5
+ * @brief Project 6
  *
  * @details Contains interface for telling and initializing time.
  *
@@ -18,7 +18,10 @@
 #define __timeh__
 
 #include <stdint.h>
-// from https://stackoverflow.com/questions/4523497/typedef-fixed-length-array/4523537
+
+/**
+ * The type of a timestamp string, holding the various components of the string.
+ */
 typedef struct timestamp_str
 {
 	char hours[4];
@@ -44,6 +47,9 @@ uint64_t time_passed(uint64_t since);
  */
 uint64_t time_now();
 
+/**
+ * Get the current timestamp as a string.
+ */
 void timestamp_now(timestamp_str* outTimestamp);
 
 #endif
